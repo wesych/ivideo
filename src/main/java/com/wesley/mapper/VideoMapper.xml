@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wesley.dao.VideoDao">
+	
+	<cache/>
+	
+	<!-- Define Result Map -->
+	<resultMap id="videoMap" type="com.wesley.entity.Video">
+		<id property="videoId" column="video_id" javaType="java.lang.Integer"></id>
+		<result property="title" column="title" javaType="java.lang.String"></result>
+		<result property="label" column="label" javaType="java.lang.String"></result>
+		<result property="description" column="description" javaType="java.lang.String"></result>
+		<result property="uploadTime" column="upload_time" javaType="java.sql.Timestamp"></result>
+		<result property="filename" column="file_name" javaType="java.lang.String"></result>
+		<result property="userId" column="user_id" javaType="java.lang.Integer"></result>
+		<result property="playCount" column="play_count" javaType="java.lang.Integer"></result>
+		<result property="commentCount" column="comment_count" javaType="java.lang.Integer"></result>
+		<result property="isDelete" column="is_delete" javaType="java.lang.Integer"></result>
+	</resultMap>
+
+	<!-- DB Operations -->
+	<insert id="insertVideo" parameterType="com.wesley.entity.Video" useGeneratedKeys="true" keyProperty="videoId">
+		insert into video (video_id,title,label,description,upload_time,file_name,user_id,play_count,comment_count,is_delete) 
+		values (#{videoId},#{title},#{label},#{description},#{uploadTime},#{filename},#{userId},#{playCount},#{commentCount},#{isDelete})
+	</insert>
+
+	<delete id="deleteVideo" parameterType="int">
+		delete from video where video_id=#{videoId}
+	</delete>
+	
+	<update id="updateVideo" parameterType="com.wesley.entity.Video">
+		update video set title=#{title},label=#{label},description=#{description},upload_time=#{uploadTime},
+		file_name=#{filename},user_id=#{userId},play_count=#{playCount},comment_count=#{commentCount},is_delete=#{isDelete}
+		where video_id=#{videoId}
+	</update>
+
+	<select id="findVideoById" parameterType="int" resultMap="videoMap">
+		select * from video where video_id=#{videoId}
+	</select>
+
+	<select id="findAllVideo" resultMap="videoMap">
+		select * from video
+	</select>
+</mapper>

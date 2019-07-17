@@ -1,0 +1,87 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans       
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd  
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd  
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+  
+    <!-- Controller auto scan -->
+    <context:component-scan base-package="com.wesley.controller" use-default-filters="false">
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+    
+    <mvc:annotation-driven />
+    
+    <!-- Config static resource mapping-->
+    <mvc:default-servlet-handler />
+    <!--  
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/avatar/**" location="/avatar/" />
+    <mvc:resources mapping="/capture/**" location="/capture/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/preview/**" location="/preview/" />
+    <mvc:resources mapping="/source_fonts/**" location="/source_fonts/" />
+    <mvc:resources mapping="/source_psd/**" location="/source_psd/" />
+    -->
+    
+    <bean id="viewResolver"  
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="prefix" value="/WEB-INF/view/" />  
+        <property name="suffix" value=".jsp" />  
+    </bean>
+
+	<!-- user login interceptor ： user without login can't access space or upload pages --> 
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/myspace/*" />
+			<mvc:mapping path="/upload" />
+			<bean class="com.wesley.interceptor.SessionCheckInterceptor"></bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/*" />
+			<bean class="com.wesley.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>   
+	
+	<!-- SpringMVC Upload -->   
+	<bean id="multipartResolver"
+         class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+         <property name="defaultEncoding" value="UTF-8" />
+         <property name="maxUploadSize" value="10000000000" />
+         <property name="resolveLazily" value="true"/> 
+    </bean>
+    
+    <!-- exception handler -->
+    <bean id="exceptionResolver"
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop
+                    key="org.springframework.web.multipart.MaxUploadSizeExceededException"></prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- i18n -->
+    <bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="zh_CN" />
+	</bean>  
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:language"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+    </bean>
+	
+</beans> 

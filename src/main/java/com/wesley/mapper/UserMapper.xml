@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wesley.dao.UserDao">
+
+	<cache />
+	
+	<!-- Define Result Map -->
+	<resultMap id="userMap" type="com.wesley.entity.User">
+		<id property="userId" column="user_id" javaType="java.lang.Integer"></id>
+		<result property="userName" column="user_name" javaType="java.lang.String"></result>
+		<result property="pwd" column="pwd" javaType="java.lang.String"></result>
+		<result property="gender" column="gender" javaType="java.lang.Integer"></result>
+		<result property="email" column="email" javaType="java.lang.String"></result>
+		<result property="joinTime" column="join_time" javaType="java.sql.Timestamp"></result>
+		<result property="avatar" column="avatar" javaType="java.lang.String"></result>
+		<result property="grade" column="grade" javaType="java.lang.Integer"></result>
+		<result property="playRecord" column="play_record" javaType="java.lang.String"></result>
+		<result property="videoCollection" column="video_collection"
+			javaType="java.lang.String"></result>
+	</resultMap>
+
+	<!-- DB Operations -->
+	<insert id="insertUser" parameterType="com.wesley.entity.User" useGeneratedKeys="true" keyProperty="userId">
+		insert into user (user_id,user_name,pwd,gender,email,join_time,avatar,grade,play_record,video_collection) 
+		values (#{userId},#{userName},#{pwd},#{gender},#{email},#{joinTime},#{avatar},#{grade},#{playRecord},#{videoCollection})
+	</insert>
+
+	<delete id="deleteUser" parameterType="int">
+		delete from user where user_id=#{userId}
+	</delete>
+	
+	<update id="updateUser" parameterType="com.wesley.entity.User">
+		update user set user_name=#{userName},pwd=#{pwd},gender=#{gender},email=#{email},join_time=#{joinTime},
+		avatar=#{avatar},grade=#{grade},play_record=#{playRecord},video_collection=#{videoCollection}
+		where user_id=#{userId}
+	</update>
+	
+
+	<select id="findUserById" parameterType="int" resultMap="userMap">
+		select * from user where user_id=#{userId}
+	</select>
+
+	<select id="findAllUser" resultMap="userMap">
+		select * from user
+	</select>
+</mapper>
